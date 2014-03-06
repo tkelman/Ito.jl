@@ -1,7 +1,7 @@
 install:
   - cinst 7zip
 # Download most recent Julia Windows binary
-  - ps: (new-object net.webclient).DownloadFile('http://s3.amazonaws.com/julialang/bin/winnt/x64/0.3/julia-0.3.0-prerelease-win64.exe', 'C:\projects\julia-binary.exe')
+  - ps: (new-object net.webclient).DownloadFile('http://s3.amazonaws.com/julialang/bin/winnt/x86/0.3/julia-0.3.0-prerelease-win32.exe', 'C:\projects\julia-binary.exe')
 # Extract installer, run it silently, output to C:\projects\julia
   - 7z x C:\projects\julia-binary.exe -oC:\projects\julia
   - C:\projects\julia\julia-installer.exe /S /D=C:\projects\julia
