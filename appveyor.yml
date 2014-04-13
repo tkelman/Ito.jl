@@ -1,17 +1,19 @@
 environment:
-  HOMEDRIVE: "C:"
-  HOMEPATH: \Users\appveyor
-  JL_VER: "x86/0.3/julia-0.3.0-prerelease-win32.exe"
+  matrix:
+  - JULIAVERSION: "x86/0.3/julia-0.3.0-prerelease-win32.exe"
+  - JULIAVERSION: "x64/0.3/julia-0.3.0-prerelease-win64.exe"
+  - JULIAVERSION: "x64/0.2/julia-0.2.1-win64.exe"
+# Add more lines here to test multiple Julia versions
 
 install:
 # Download most recent Julia Windows binary
-  - ps: (new-object net.webclient).DownloadFile($("http://s3.amazonaws.com/julialang/bin/winnt/"+$env:JL_VER), "C:\projects\julia-binary.exe")
+  - ps: (new-object net.webclient).DownloadFile($("http://s3.amazonaws.com/julialang/bin/winnt/"+$env:JULIAVERSION), "C:\projects\julia-binary.exe")
 # Run installer silently, output to C:\projects\julia
   - C:\projects\julia-binary.exe /S /D=C:\projects\julia
 
 build_script:
-  - C:\projects\julia\bin\julia-debug-readline -e "Pkg.init(); run(`cp -r $(pwd()) $(Pkg.dir())/Ito`); Pkg.pin(\"Ito\"); Pkg.resolve()"
+  - C:\projects\julia\bin\julia -e "Pkg.init(); run(`cp -r $(pwd()) $(Pkg.dir())/Ito`); Pkg.pin(\"Ito\"); Pkg.resolve()"
 
 test_script:
-  - C:\projects\julia\bin\julia-debug-readline -e "using Ito; @assert isdefined(:Ito); @assert typeof(Ito) === Module"
-  - C:\projects\julia\bin\julia-debug-readline test/Ito.jl
+  - C:\projects\julia\bin\julia -e "using Ito; @assert isdefined(:Ito); @assert typeof(Ito) === Module"
+  - C:\projects\julia\bin\julia test/Ito.jl
